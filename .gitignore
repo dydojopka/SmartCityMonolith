@@ -1,0 +1,22 @@
+.local
+AGENTS.md
+
+# Local configuration and Python environment
+.env
+.env.*
+!.env.example
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Working SQLite databases
+*.db
+*.db-shm
+*.db-wal
+*.sqlite*
+
+# Temporary office editor files
+~$*
+.~lock.*#
