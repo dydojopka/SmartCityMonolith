@@ -72,7 +72,7 @@ api.send(
 Ответ заявки: `id`, `user_id`, `title`, `description`, `category`, `address`, `status`, `created_at`, `updated_at`; `request_key` не публикуется.
 Общие ошибки: отсутствующий/невалидный/просроченный JWT → `401` и `WWW-Authenticate: Bearer`, недостаточная роль → `403`, ошибки входа → `422` с `detail` без `input`/`ctx`.
 `/health`, `/docs` и CORS сохраняются. Префиксы `/api` и модулей не добавляются.
-Один сервер `8000` доступен на host-портах `8003` и `8006` (параметры `UTILITY_PORT`/`NOTIFICATION_PORT`). HTTP Notification остаётся нужен внешним Transport/Billing; сетевой alias для полного городского стенда подключается отдельно при интеграции.
+Один сервер `8000` доступен на host-портах `8003` и `8006` (параметры `UTILITY_PORT`/`NOTIFICATION_PORT`). Корневой `compose.yml` подключает его к полному SmartCity с сетевыми aliases `utility-service` и `notification-service`. Transport/Billing из `smart-city/services/` сохраняют HTTP-вызов `notification-service:8000`; прежний frontend из `smart-city/frontend/` использует те же внешние адреса. Настройка сети уже описана, но работоспособность HTTP Notification и всего сценария ещё предстоит проверить после реализации модулей. Остальные четыре сервиса не становятся модулями и сохраняют свои SQLite-файлы.
 
 ## Данные и тесты
 

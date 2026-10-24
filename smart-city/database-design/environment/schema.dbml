@@ -1,0 +1,26 @@
+Table sensors {
+  id varchar(36) [pk, not null]
+  name varchar(255) [not null]
+  type varchar(100) [not null]
+  location varchar(255)
+  unit varchar(50) [not null]
+  latitude float [not null]
+  longitude float [not null]
+  api_key_hash varchar(64) [not null]
+  status varchar(20) [not null]
+  last_seen_at datetime
+  created_at datetime [not null]
+  Note: '''status IN ('ACTIVE','INACTIVE')'''
+}
+
+Table sensor_readings {
+  id varchar(36) [pk, not null]
+  sensor_id varchar(36) [not null, ref: > sensors.id]
+  value float [not null]
+  unit varchar(50)
+  measured_at datetime [not null]
+  received_at datetime [not null]
+  Indexes {
+    (sensor_id, measured_at) [name: 'ix_sensor_readings_sensor_id_measured_at']
+  }
+}

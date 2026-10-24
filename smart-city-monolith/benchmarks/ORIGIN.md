@@ -2,7 +2,7 @@
 
 - Источник: <https://github.com/dydojopka/SmartCity>, каталог `smart-city/`.
 - Зафиксированный commit: `6983e58de588795731a548e31534794873835057`.
-- Скопированы только отслеживаемые `app/`, `requirements.txt`, `Dockerfile` из `services/utility-service/` и `services/notification-service/`. Окружения, базы, секреты и исходные контейнеры не используются.
+- Для этого изолированного стенда скопированы только отслеживаемые `app/`, `requirements.txt`, `Dockerfile` из `services/utility-service/` и `services/notification-service/`. Окружения, базы, секреты и исходные контейнеры не используются. Полный исходный SmartCity также сохранён в корневом `smart-city/`; целевой полный город описан корневым `compose.yml`. Состав переноса — в [docs/SMARTCITY_ORIGIN.md](../../docs/SMARTCITY_ORIGIN.md).
 - Utility, остальные файлы Notification и оба исходных Dockerfile/requirements совпадают с источником побайтово. Единственное поведенческое отличие — три строки в `notification-service/app/main.py` после commit/refresh `PENDING`, перед имитацией отправки:
 
 ```python
@@ -33,6 +33,8 @@ docker compose -f benchmarks/compose.micro.yml down
 ```
 
 Compose project по умолчанию — `smart-city-micro-benchmark`, порты `18003/18006`. Контейнеров два, оба с SQLite внутри процесса; отдельного контейнера СУБД нет. Один обычный запуск — одна Compose-команда.
+
+Это сравнение подсистемы Utility + Notification, а не всех компонентов города. Полные исходный/целевой стенды запускаются отдельно для проверки совместимости; их контейнеры и результаты нельзя смешивать с измерениями этой пары.
 
 ## Проверка отказа
 

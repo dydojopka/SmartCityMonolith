@@ -1,0 +1,51 @@
+Table parkings {
+  id varchar(36) [pk, not null]
+  name varchar(200) [not null]
+  address varchar(300) [not null]
+  latitude float [not null]
+  longitude float [not null]
+  total_spaces integer [not null]
+  available_spaces integer [not null]
+  price_per_hour_cents integer [not null]
+  created_at datetime [not null]
+  updated_at datetime [not null]
+  Indexes {
+    available_spaces [name: 'ix_parkings_available_spaces']
+  }
+  Note: '''available_spaces >= 0 AND available_spaces <= total_spaces; price_per_hour_cents >= 0; total_spaces >= 0'''
+}
+
+Table vehicles {
+  id varchar(36) [pk, not null]
+  type varchar(30) [not null]
+  route_number varchar(30) [not null]
+  plate_number varchar(20)
+  model varchar(100)
+  latitude float [not null]
+  longitude float [not null]
+  status varchar(20) [not null]
+  updated_at datetime [not null]
+  created_at datetime [not null]
+  Indexes {
+    plate_number [name: 'ix_vehicles_plate_number', unique]
+    status [name: 'ix_vehicles_status']
+  }
+  Note: '''status IN ('ACTIVE','INACTIVE','MAINTENANCE')'''
+}
+
+Table reservations {
+  id varchar(36) [pk, not null]
+  parking_id varchar(36) [not null, ref: > parkings.id]
+  user_id varchar(36) [not null]
+  request_key varchar(128)
+  status varchar(20) [not null]
+  created_at datetime [not null]
+  expires_at datetime
+  Indexes {
+    parking_id [name: 'ix_reservations_parking_id']
+    status [name: 'ix_reservations_status']
+    user_id [name: 'ix_reservations_user_id']
+    (user_id, request_key) [name: 'uq_reservation_user_request', unique]
+  }
+  Note: '''status IN ('ACTIVE','CANCELLED','EXPIRED')'''
+}

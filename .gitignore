@@ -10,6 +10,14 @@ venv/
 __pycache__/
 *.py[cod]
 .pytest_cache/
+.ruff_cache/
+
+# Frontend dependencies and generated bundles
+node_modules/
+dist/
+
+# Local service data
+data/
 
 # Working SQLite databases
 *.db
@@ -20,3 +28,4 @@ __pycache__/
 # Temporary office editor files
 ~$*
 .~lock.*#
+.DS_Store

@@ -1,0 +1,49 @@
+Table invoices {
+  id varchar(36) [pk, not null]
+  user_id varchar(36) [not null]
+  amount_cents integer [not null]
+  status varchar(20) [not null]
+  description varchar(300)
+  due_date date
+  paid_at datetime
+  created_at datetime [not null]
+  updated_at datetime [not null]
+  Indexes {
+    status [name: 'ix_invoices_status']
+    user_id [name: 'ix_invoices_user_id']
+  }
+  Note: '''status IN ('PENDING','PAID','CANCELLED'); typeof(amount_cents) = 'integer' AND amount_cents > 0'''
+}
+
+Table payments {
+  id varchar(36) [pk, not null]
+  invoice_id varchar(36) [not null, ref: > invoices.id]
+  user_id varchar(36) [not null]
+  amount_cents integer [not null]
+  status varchar(20) [not null]
+  idempotency_key varchar(128) [not null]
+  external_event_id varchar(128)
+  created_at datetime [not null]
+  updated_at datetime [not null]
+  Indexes {
+    external_event_id [name: 'ix_payments_external_event_id', unique]
+    idempotency_key [name: 'ix_payments_idempotency_key', unique]
+    invoice_id [name: 'ix_payments_invoice_id']
+    status [name: 'ix_payments_status']
+    user_id [name: 'ix_payments_user_id']
+  }
+  Note: '''status IN ('CREATED','SUCCEEDED','FAILED'); typeof(amount_cents) = 'integer' AND amount_cents > 0; CREATE UNIQUE INDEX uq_active_payment_invoice ON payments (invoice_id) WHERE status IN ('CREATED','SUCCEEDED')'''
+}
+
+Table webhook_events {
+  id varchar(36) [pk, not null]
+  external_event_id varchar(128) [not null]
+  payment_id varchar(36) [not null, ref: > payments.id]
+  event_type varchar(50) [not null]
+  payload json
+  processed_at datetime [not null]
+  Indexes {
+    external_event_id [name: 'ix_webhook_events_external_event_id', unique]
+    payment_id [name: 'ix_webhook_events_payment_id']
+  }
+}

@@ -1,0 +1,5 @@
+digraph schema {
+graph [rankdir=LR, bgcolor="white"];
+node [shape=plain fontname="Arial"];
+users [label=<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="7"><TR><TD BGCOLOR="#2457d6"><FONT COLOR="white"><B>users</B></FONT></TD></TR><TR><TD ALIGN="LEFT">id: VARCHAR(36) pk, not null</TD></TR><TR><TD ALIGN="LEFT">email: VARCHAR(255) not null</TD></TR><TR><TD ALIGN="LEFT">password_hash: VARCHAR(255) not null</TD></TR><TR><TD ALIGN="LEFT">first_name: VARCHAR(100) not null</TD></TR><TR><TD ALIGN="LEFT">last_name: VARCHAR(100) not null</TD></TR><TR><TD ALIGN="LEFT">role: VARCHAR(20) not null</TD></TR><TR><TD ALIGN="LEFT">is_active: BOOLEAN not null</TD></TR><TR><TD ALIGN="LEFT">created_at: DATETIME not null</TD></TR></TABLE>>];
+}

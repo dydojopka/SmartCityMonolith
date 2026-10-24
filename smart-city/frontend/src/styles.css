@@ -1,0 +1,271 @@
+:root {
+  color: #172033;
+  background: #f3f6fb;
+  font-family: system-ui, sans-serif;
+  line-height: 1.5;
+}
+
+body {
+  margin: 0;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+.site-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 16px max(16px, calc((100% - 900px) / 2));
+  background: #172033;
+  color: white;
+}
+
+.brand {
+  color: white;
+  font-size: 1.2rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+nav {
+  flex-wrap: wrap;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+nav a,
+.link-button {
+  color: #e7edff;
+  text-decoration: none;
+}
+
+nav a.active {
+  color: white;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.link-button {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+
+.container {
+  width: min(900px, calc(100% - 32px));
+  margin: 48px auto;
+}
+
+.card {
+  margin-top: 24px;
+  padding: 24px;
+  border: 1px solid #dbe2ef;
+  border-radius: 12px;
+  background: white;
+  box-shadow: 0 8px 24px rgb(23 32 51 / 8%);
+}
+
+.button {
+  display: inline-block;
+  margin-top: 8px;
+  padding: 10px 16px;
+  border: 0;
+  border-radius: 7px;
+  background: #2457d6;
+  color: white;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.button:disabled {
+  cursor: wait;
+  opacity: 0.65;
+}
+
+.form-card {
+  width: min(100%, 520px);
+  margin: 48px auto;
+}
+
+form {
+  display: grid;
+  gap: 16px;
+}
+
+label {
+  display: grid;
+  gap: 6px;
+  font-weight: 600;
+}
+
+input,
+textarea,
+select {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 9px 10px;
+  border: 1px solid #b9c5dc;
+  border-radius: 6px;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.error {
+  margin: 0;
+  color: #b32424;
+}
+
+.muted {
+  color: #5d6880;
+}
+
+.profile-list {
+  display: grid;
+  gap: 12px;
+}
+
+.profile-list div {
+  display: grid;
+  grid-template-columns: 130px 1fr;
+  gap: 16px;
+}
+
+dt {
+  color: #5d6880;
+}
+
+dd {
+  margin: 0;
+}
+
+@media (max-width: 600px) {
+  .site-header,
+  nav {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+a {
+  color: #2457d6;
+}
+
+.card { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+th, td { padding: 10px; text-align: left; border-bottom: 1px solid #dbe2ef; }
+td { overflow-wrap: anywhere; min-width: 85px; }
+textarea { min-height: 90px; }
+.secondary { background: #516078; }
+code { overflow-wrap: anywhere; }
+
+.overview-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.overview-heading h1 {
+  margin: 0;
+}
+
+.overview-section {
+  margin-top: 40px;
+  padding-top: 24px;
+  border-top: 1px solid #dbe2ef;
+}
+
+.overview-section h2 {
+  margin: 0 0 24px;
+  font-size: 1.5rem;
+}
+
+.overview-section h3 {
+  margin: 0 0 8px;
+  font-size: 1.1rem;
+}
+
+.overview-columns,
+.service-directory {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 32px;
+}
+
+.overview-columns p,
+.service-directory p {
+  margin: 8px 0 16px;
+}
+
+.overview-value {
+  font-size: 1.75rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.overview-list,
+.parking-overview,
+.service-directory {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 16px;
+}
+
+.overview-list li + li {
+  margin-top: 12px;
+}
+
+.overview-list span {
+  display: block;
+  font-size: 0.9rem;
+}
+
+.parking-overview li {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 0;
+  border-bottom: 1px solid #dbe2ef;
+}
+
+.parking-overview p {
+  margin: 4px 0;
+}
+
+.home-actions {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+@media (max-width: 600px) {
+  .overview-heading,
+  .parking-overview li {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .overview-columns,
+  .service-directory {
+    grid-template-columns: 1fr;
+  }
+}

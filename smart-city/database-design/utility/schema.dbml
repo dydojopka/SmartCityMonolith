@@ -1,0 +1,19 @@
+Table issues {
+  id varchar(36) [pk, not null]
+  user_id varchar(36) [not null]
+  request_key varchar(128)
+  title varchar(200) [not null]
+  description text [not null]
+  category varchar(50) [not null]
+  address varchar(300) [not null]
+  status varchar(20) [not null]
+  created_at datetime [not null]
+  updated_at datetime [not null]
+  Indexes {
+    category [name: 'ix_issues_category']
+    status [name: 'ix_issues_status']
+    user_id [name: 'ix_issues_user_id']
+    (user_id, request_key) [name: 'uq_issue_user_request', unique]
+  }
+  Note: '''status IN ('NEW','IN_PROGRESS','RESOLVED','REJECTED')'''
+}

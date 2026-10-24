@@ -26,7 +26,7 @@
 
 ```bash
 cd smart-city-monolith
-docker compose up -d --build --wait app
+docker compose up --build app
 ```
 
 - Документация: http://localhost:8003/docs

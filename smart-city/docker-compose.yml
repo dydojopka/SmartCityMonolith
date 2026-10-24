@@ -1,0 +1,130 @@
+name: smart-city-original
+
+x-api-defaults: &api-defaults
+  command: ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "1"]
+  healthcheck:
+    test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health', timeout=2).close()"]
+    interval: 5s
+    timeout: 3s
+    retries: 20
+
+services:
+  identity-service:
+    <<: *api-defaults
+    build: ./services/identity-service
+    environment:
+      SERVICE_NAME: identity-service
+      DATABASE_URL: sqlite:////data/identity.db
+      JWT_SECRET: ${JWT_SECRET:-development-jwt-secret}
+      CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:${FRONTEND_PORT:-5173}}
+    ports:
+      - "127.0.0.1:${IDENTITY_PORT:-8001}:8000"
+    volumes:
+      - identity-data:/data
+
+  transport-service:
+    <<: *api-defaults
+    build: ./services/transport-service
+    environment:
+      SERVICE_NAME: transport-service
+      DATABASE_URL: sqlite:////data/transport.db
+      JWT_SECRET: ${JWT_SECRET:-development-jwt-secret}
+      SERVICE_TOKEN: ${SERVICE_TOKEN:-development-service-token}
+      NOTIFICATION_URL: http://notification-service:8000
+      CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:${FRONTEND_PORT:-5173}}
+    ports:
+      - "127.0.0.1:${TRANSPORT_PORT:-8002}:8000"
+    volumes:
+      - transport-data:/data
+    depends_on:
+      - notification-service
+
+  utility-service:
+    <<: *api-defaults
+    build: ./services/utility-service
+    environment:
+      SERVICE_NAME: utility-service
+      DATABASE_URL: sqlite:////data/utility.db
+      JWT_SECRET: ${JWT_SECRET:-development-jwt-secret}
+      SERVICE_TOKEN: ${SERVICE_TOKEN:-development-service-token}
+      NOTIFICATION_URL: http://notification-service:8000
+      CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:${FRONTEND_PORT:-5173}}
+    ports:
+      - "127.0.0.1:${UTILITY_PORT:-8003}:8000"
+    volumes:
+      - utility-data:/data
+    depends_on:
+      - notification-service
+
+  environment-service:
+    <<: *api-defaults
+    build: ./services/environment-service
+    environment:
+      SERVICE_NAME: environment-service
+      DATABASE_URL: sqlite:////data/environment.db
+      SENSOR_API_KEY: ${SENSOR_API_KEY:-demo-sensor-key}
+      CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:${FRONTEND_PORT:-5173}}
+    ports:
+      - "127.0.0.1:${ENVIRONMENT_PORT:-8004}:8000"
+    volumes:
+      - environment-data:/data
+
+  billing-service:
+    <<: *api-defaults
+    build: ./services/billing-service
+    environment:
+      SERVICE_NAME: billing-service
+      DATABASE_URL: sqlite:////data/billing.db
+      JWT_SECRET: ${JWT_SECRET:-development-jwt-secret}
+      SERVICE_TOKEN: ${SERVICE_TOKEN:-development-service-token}
+      DEMO_PAYMENTS_ENABLED: ${DEMO_PAYMENTS_ENABLED:-true}
+      NOTIFICATION_URL: http://notification-service:8000
+      CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:${FRONTEND_PORT:-5173}}
+    ports:
+      - "127.0.0.1:${BILLING_PORT:-8005}:8000"
+    volumes:
+      - billing-data:/data
+    depends_on:
+      - notification-service
+
+  notification-service:
+    <<: *api-defaults
+    build: ./services/notification-service
+    environment:
+      SERVICE_NAME: notification-service
+      DATABASE_URL: sqlite:////data/notification.db
+      SERVICE_TOKEN: ${SERVICE_TOKEN:-development-service-token}
+    ports:
+      - "127.0.0.1:${NOTIFICATION_PORT:-8006}:8000"
+    volumes:
+      - notification-data:/data
+
+  frontend:
+    build: ./frontend
+    environment:
+      VITE_IDENTITY_API_URL: http://localhost:${IDENTITY_PORT:-8001}
+      VITE_TRANSPORT_API_URL: http://localhost:${TRANSPORT_PORT:-8002}
+      VITE_UTILITY_API_URL: http://localhost:${UTILITY_PORT:-8003}
+      VITE_ENVIRONMENT_API_URL: http://localhost:${ENVIRONMENT_PORT:-8004}
+      VITE_BILLING_API_URL: http://localhost:${BILLING_PORT:-8005}
+    ports:
+      - "127.0.0.1:${FRONTEND_PORT:-5173}:5173"
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://localhost:5173/').then(r => process.exit(r.ok ? 0 : 1)).catch(() => process.exit(1))"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    depends_on:
+      - identity-service
+      - transport-service
+      - utility-service
+      - environment-service
+      - billing-service
+
+volumes:
+  identity-data:
+  transport-data:
+  utility-data:
+  environment-data:
+  billing-data:
+  notification-data:

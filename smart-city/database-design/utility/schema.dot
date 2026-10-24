@@ -1,0 +1,5 @@
+digraph schema {
+graph [rankdir=LR, bgcolor="white"];
+node [shape=plain fontname="Arial"];
+issues [label=<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="7"><TR><TD BGCOLOR="#2457d6"><FONT COLOR="white"><B>issues</B></FONT></TD></TR><TR><TD ALIGN="LEFT">id: VARCHAR(36) pk, not null</TD></TR><TR><TD ALIGN="LEFT">user_id: VARCHAR(36) not null</TD></TR><TR><TD ALIGN="LEFT">request_key: VARCHAR(128) nullable</TD></TR><TR><TD ALIGN="LEFT">title: VARCHAR(200) not null</TD></TR><TR><TD ALIGN="LEFT">description: TEXT not null</TD></TR><TR><TD ALIGN="LEFT">category: VARCHAR(50) not null</TD></TR><TR><TD ALIGN="LEFT">address: VARCHAR(300) not null</TD></TR><TR><TD ALIGN="LEFT">status: VARCHAR(20) not null</TD></TR><TR><TD ALIGN="LEFT">created_at: DATETIME not null</TD></TR><TR><TD ALIGN="LEFT">updated_at: DATETIME not null</TD></TR></TABLE>>];
+}
