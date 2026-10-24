@@ -1,0 +1,31 @@
+name: smart-city-monolith
+
+services:
+  app:
+    build: .
+    environment:
+      DATABASE_URL: sqlite:////data/monolith.db
+      JWT_SECRET: ${JWT_SECRET:-development-jwt-secret}
+      SERVICE_TOKEN: ${SERVICE_TOKEN:-development-service-token}
+      CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:5173}
+      NOTIFICATION_FAIL_SEND: ${NOTIFICATION_FAIL_SEND:-false}
+    ports:
+      - "127.0.0.1:${UTILITY_PORT:-8003}:8000"
+      - "127.0.0.1:${NOTIFICATION_PORT:-8006}:8000"
+    volumes:
+      - monolith-sqlite-data:/data
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health', timeout=2).close()"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  tests:
+    build: .
+    profiles: [test]
+    environment:
+      PYTEST_ADDOPTS: -o cache_dir=/tmp/pytest-cache
+    command: ["python", "-m", "pytest", "-q"]
+
+volumes:
+  monolith-sqlite-data:
