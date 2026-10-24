@@ -19,3 +19,25 @@
 4. Свой чек-лист из таблицы ниже - конкретные задачи, критерии готовности и инструкции по работе в ветке и созданию PR.
 
 Персональный чек-лист не заменяет общий план и API-контракт.
+
+## Запуск
+
+Нужны Docker и Docker Compose. Из корня репозитория:
+
+```bash
+cd smart-city-monolith
+docker compose up -d --build --wait app
+```
+
+- Документация: http://localhost:8003/docs
+- Проверка запуска: http://localhost:8003/health
+- То же приложение доступно на порту `8006`. SQLite хранится в Docker volume.
+
+Сейчас доступны только `/health` и `/docs`; бизнес-модули ещё не подключены.
+Если порты заняты исходным SmartCity, настрой `UTILITY_PORT` и `NOTIFICATION_PORT` в `.env` по [.env.example](smart-city-monolith/.env.example).
+
+Остановка из каталога `smart-city-monolith/`, без удаления данных:
+
+```bash
+docker compose down
+```
