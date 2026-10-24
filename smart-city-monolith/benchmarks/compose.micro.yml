@@ -1,0 +1,51 @@
+name: smart-city-micro-benchmark
+
+services:
+  utility-service:
+    build:
+      context: ..
+      dockerfile: benchmarks/Dockerfile.micro
+      target: utility
+    environment:
+      DATABASE_URL: sqlite:////data/utility.db
+      JWT_SECRET: ${JWT_SECRET:-development-jwt-secret}
+      SERVICE_TOKEN: ${SERVICE_TOKEN:-development-service-token}
+      NOTIFICATION_URL: http://notification-service:8000
+      CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:5173}
+    ports:
+      - "127.0.0.1:18003:8000"
+    volumes:
+      - micro-utility-data:/data
+    command: ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "1"]
+    depends_on:
+      notification-service:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health', timeout=2).close()"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  notification-service:
+    build:
+      context: ..
+      dockerfile: benchmarks/Dockerfile.micro
+      target: notification
+    environment:
+      DATABASE_URL: sqlite:////data/notification.db
+      SERVICE_TOKEN: ${SERVICE_TOKEN:-development-service-token}
+      NOTIFICATION_FAIL_SEND: ${NOTIFICATION_FAIL_SEND:-false}
+    ports:
+      - "127.0.0.1:18006:8000"
+    volumes:
+      - micro-notification-data:/data
+    command: ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "1"]
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health', timeout=2).close()"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+volumes:
+  micro-utility-data:
+  micro-notification-data:
