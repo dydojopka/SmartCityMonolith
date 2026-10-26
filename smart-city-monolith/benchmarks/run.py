@@ -190,7 +190,7 @@ def main():
     parser.add_argument("--compose", type=Path, required=True)
     parser.add_argument("--project", required=True)
     parser.add_argument("--revision", required=True)
-    parser.add_argument("--requests", type=int, default=2000)
+    parser.add_argument("--requests", type=int, default=200)
     parser.add_argument("--runs", type=int, default=3)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--docker-command", nargs="+", default=["docker"])
