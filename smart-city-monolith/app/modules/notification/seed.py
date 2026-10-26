@@ -1,13 +1,28 @@
-# Новый seed монолита, не реализация наполнения. Владелец: vaNYA.
-# Источник: https://github.com/dydojopka/SmartCity @ 6983e58de588795731a548e31534794873835057
-# Файл smart-city/services/notification-service/app/seed.py в оригинале пустой.
-# Задание: docs/tasks/vaNYA.md; данные: docs/API_CONTRACT.md
-# (пути от корня репозитория).
-#
-# Реализовать seed_database(session: Session) -> None для своей таблицы.
-# Демонстрационная запись: id=80000000-0000-0000-0000-000000000001,
-# user_id и recipient=00000000-0000-0000-0000-000000000001, channel=PUSH,
-# status=SENT; sent_at заполнен UTC-датой.
-# Проверять существование ID: повторный seed не меняет существующие записи.
-# Не вызывать отправку, не удалять данные, не запускать seed при импорте.
-# Общий init_db подключит функцию после приёмки модуля.
+from datetime import datetime, timezone
+
+from sqlalchemy.orm import Session
+
+from app.modules.notification.models import Notification
+
+DEMO_NOTIFICATION_ID = "a0000000-0000-0000-0000-000000000001"
+
+
+def seed_database(session: Session) -> None:
+    if session.get(Notification, DEMO_NOTIFICATION_ID) is not None:
+        return
+
+    now = datetime.now(timezone.utc)
+    session.add(
+        Notification(
+            id=DEMO_NOTIFICATION_ID,
+            user_id=None,
+            recipient="demo@example.com",
+            channel="EMAIL",
+            subject="Демонстрационное уведомление",
+            message="Это демонстрационное уведомление со статусом SENT",
+            status="SENT",
+            created_at=now,
+            sent_at=now,
+        )
+    )
+    session.commit()
