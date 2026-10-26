@@ -1,15 +1,5 @@
-# Заготовка переноса, не реализация модуля. Владелец: daNYA.
-# Источник: https://github.com/dydojopka/SmartCity @ 6983e58de588795731a548e31534794873835057
-# Файл: smart-city/services/utility-service/app/main.py
-# Задание: docs/tasks/daNYA.md (от корня репозитория).
-# Перед включением: оставить три бизнес-маршрута на APIRouter без префикса;
-# не переносить FastAPI, lifespan, CORS, /health и общую настройку приложения.
-# Исправить импорты на свой модуль. Фасад получать через get_notification_api/Depends
-# и передавать helper уведомлений только после условного UPDATE, commit и refresh.
-# Сохранить роли, replay/conflict POST и защиту от конкурентных POST/PUT.
-#
 import logging
-from typing import TYPE_CHECKING, Annotated, Any
+from typing import Annotated
 from uuid import uuid4
 
 from fastapi import APIRouter, Depends, Header, HTTPException, Response, status
@@ -20,6 +10,7 @@ from sqlalchemy.orm import Session
 from app.auth import CurrentUser, get_current_user, require_roles
 from app.database import get_db
 from app.dependencies import get_notification_api
+from app.modules.notification.api import NotificationApi
 from app.modules.utility.models import Issue
 from app.modules.utility.notifications import notify_issue_status_changed
 from app.modules.utility.schemas import (
@@ -27,9 +18,6 @@ from app.modules.utility.schemas import (
     IssueResponse,
     IssueStatusUpdate,
 )
-
-if TYPE_CHECKING:
-    from app.modules.notification.api import NotificationApi
 
 logger = logging.getLogger("smart-city-monolith.utility")
 
@@ -114,10 +102,7 @@ def update_issue_status(
     payload: IssueStatusUpdate,
     _: Annotated[CurrentUser, Depends(require_roles("OPERATOR", "ADMIN"))],
     db: Annotated[Session, Depends(get_db)],
-    # Any + TYPE_CHECKING: роутер импортируется, даже если Иванов NotificationApi
-    # ещё не готов. При запросе Depends(get_notification_api) импортирует реальный
-    # фасад (ленивый импорт внутри app/dependencies.py).
-    notification_api: Annotated[Any, Depends(get_notification_api)],
+    notification_api: Annotated[NotificationApi, Depends(get_notification_api)],
 ) -> Issue:
     issue = db.get(Issue, issue_id)
     if issue is None:
@@ -131,18 +116,14 @@ def update_issue_status(
         .values(status=payload.status)
     )
     db.commit()
+    db.refresh(issue)
 
     if result.rowcount:
         logger.info(
             "issue_status_updated issue_id=%s status=%s", issue.id, payload.status
         )
-        # Важно: notify ДО db.refresh().
-        # db.refresh() открывает SHARED-транзакцию SQLite и заблокировал бы
-        # писателя внутри NotificationApi (его собственная сессия).
-        # После db.commit() активной транзакции нет — конфликта нет.
         notify_issue_status_changed(
             notification_api, issue.id, issue.user_id, payload.status
         )
 
-    db.refresh(issue)
     return issue

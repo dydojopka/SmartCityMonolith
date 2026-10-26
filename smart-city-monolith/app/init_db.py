@@ -1,11 +1,15 @@
 from app import database
+from app.modules.notification import models as notification_models
+from app.modules.notification.seed import seed_database as seed_notifications
+from app.modules.utility import models as utility_models
+from app.modules.utility.seed import seed_database as seed_issues
 
 
 def init_database() -> None:
-    # После принятия модулей здесь регистрируются обе models до create_all.
     database.Base.metadata.create_all(bind=database.engine)
-    # Здесь будут вызваны seed_database(session) обоих модулей в отдельных сессиях.
-    # Пока моделей и seed нет, создаётся только SQLite-файл, без фиктивных данных.
+    for seed in (seed_issues, seed_notifications):
+        with database.SessionLocal() as session:
+            seed(session)
 
 
 if __name__ == "__main__":

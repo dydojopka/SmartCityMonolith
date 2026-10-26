@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 
 from app.modules.notification.models import Notification
 
-DEMO_NOTIFICATION_ID = "a0000000-0000-0000-0000-000000000001"
+DEMO_NOTIFICATION_ID = "80000000-0000-0000-0000-000000000001"
 
 
 def seed_database(session: Session) -> None:
@@ -15,9 +15,9 @@ def seed_database(session: Session) -> None:
     session.add(
         Notification(
             id=DEMO_NOTIFICATION_ID,
-            user_id=None,
-            recipient="demo@example.com",
-            channel="EMAIL",
+            user_id="00000000-0000-0000-0000-000000000001",
+            recipient="00000000-0000-0000-0000-000000000001",
+            channel="PUSH",
             subject="Демонстрационное уведомление",
             message="Это демонстрационное уведомление со статусом SENT",
             status="SENT",

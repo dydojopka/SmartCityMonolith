@@ -8,6 +8,8 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.errors import validation_error
 from app.init_db import init_database
+from app.modules.notification.router import router as notification_router
+from app.modules.utility.router import router as utility_router
 
 SERVICE_NAME = os.getenv("SERVICE_NAME", "smart-city-monolith")
 logging.basicConfig(level=logging.INFO)
@@ -17,7 +19,7 @@ logger = logging.getLogger(SERVICE_NAME)
 @asynccontextmanager
 async def lifespan(_: FastAPI):
     init_database()
-    logger.info("%s started (infrastructure; module routers are not connected yet)", SERVICE_NAME)
+    logger.info("%s started", SERVICE_NAME)
     yield
 
 
@@ -31,8 +33,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# После принятия модулей: импорт router из каждого модуля и app.include_router(router).
-# Префиксы /api, /utility и /notification не добавляются.
+app.include_router(utility_router)
+app.include_router(notification_router)
 
 
 @app.get("/health")

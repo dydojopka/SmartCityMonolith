@@ -140,7 +140,8 @@ def test_database_is_a_private_file(db_engine, tmp_path):
     assert db_engine is database.engine
     assert Path(db_engine.url.database) == tmp_path / "monolith-test.db"
     with db_engine.connect() as connection:
-        files = connection.execute(text("PRAGMA database_list")).all()
+        files = [row for row in connection.execute(text("PRAGMA database_list"))
+                 if row[1] != "temp"]
     assert len(files) == 1
     assert Path(files[0][2]) == tmp_path / "monolith-test.db"
 

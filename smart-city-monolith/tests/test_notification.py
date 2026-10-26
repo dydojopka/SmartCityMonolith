@@ -1,6 +1,7 @@
 import logging
 
 import pytest
+from fastapi.testclient import TestClient
 from pydantic import ValidationError
 from sqlalchemy import func, select
 
@@ -189,17 +190,18 @@ def test_http_fail_sending(client, session_factory, service_headers):
 
     client.app.dependency_overrides[get_notification_api] = override
     try:
-        response = client.post(
-            "/notifications",
-            json={
-                "user_id": None,
-                "channel": "EMAIL",
-                "recipient": "test@example.com",
-                "subject": None,
-                "message": "Сообщение при HTTP-сбое",
-            },
-            headers=service_headers,
-        )
+        with TestClient(client.app, raise_server_exceptions=False) as http_client:
+            response = http_client.post(
+                "/notifications",
+                json={
+                    "user_id": None,
+                    "channel": "EMAIL",
+                    "recipient": "test@example.com",
+                    "subject": None,
+                    "message": "Сообщение при HTTP-сбое",
+                },
+                headers=service_headers,
+            )
         assert response.status_code == 500
     finally:
         client.app.dependency_overrides.clear()

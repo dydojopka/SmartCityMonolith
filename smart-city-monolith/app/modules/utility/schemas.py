@@ -1,9 +1,3 @@
-# Заготовка переноса, не реализация модуля. Владелец: daNYA.
-# Источник: https://github.com/dydojopka/SmartCity @ 6983e58de588795731a548e31534794873835057
-# Файл: smart-city/services/utility-service/app/schemas.py
-# Задание: docs/tasks/daNYA.md (от корня репозитория).
-# При включении сохранить исходные поля, ограничения, нормализацию и формат ответа.
-#
 from datetime import datetime
 from typing import Literal
 
