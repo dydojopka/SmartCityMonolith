@@ -1,0 +1,29 @@
+{
+  "purpose": "Diagnose rejected preliminary micro run; not architecture comparison results",
+  "native_sqlite_commit_probe": {
+    "samples_per_disk": 20,
+    "hdd_d_mean_ms": 156.9063900009496,
+    "sata_ssd_c_mean_ms": 130.72274498990737,
+    "nvme_h_mean_ms": 7.839965005405247
+  },
+  "preliminary_micro": {
+    "valid": false,
+    "requests": 200,
+    "utility_http_200": 200,
+    "issues_in_progress": 200,
+    "sent_notifications": 148,
+    "missing_notifications": 52,
+    "observed_error": "httpx.ReadTimeout at original 3 second interservice timeout"
+  },
+  "final_storage": {
+    "device": "SK hynix BC501 HFM512GDJTNG-8310A NVMe",
+    "filesystem": "NTFS via WSL bind-backed named volumes",
+    "same_device_and_mount_type_for_both_versions": true,
+    "docker_sqlite_commit_probe_samples": 30,
+    "docker_sqlite_commit_probe_mean_ms": 16.44424673334773,
+    "journal_mode": "delete",
+    "synchronous": 2,
+    "busy_timeout_ms": 30000,
+    "utility_notification_http_timeout_seconds": 3
+  }
+}

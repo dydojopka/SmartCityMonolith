@@ -1,0 +1,43 @@
+{
+  "version": "micro",
+  "user_id": "35cfb75f-52a0-4e1b-8594-fa05565d6638",
+  "direct_notification_http_status": 500,
+  "failure": {
+    "http_status": 200,
+    "response": {
+      "id": "15cafbdd-cb10-4adf-95e9-66c77da3a672",
+      "user_id": "35cfb75f-52a0-4e1b-8594-fa05565d6638",
+      "title": "Эксперимент с отказом",
+      "description": "Проверка сохранения заявки",
+      "category": "LIGHTING",
+      "address": "Тестовая улица, 10",
+      "status": "IN_PROGRESS",
+      "created_at": "2026-10-26T18:05:16.655939Z",
+      "updated_at": "2026-10-26T18:05:16.691667Z"
+    },
+    "saved_issue_status": "IN_PROGRESS",
+    "notification_status": "PENDING",
+    "sent_at": null
+  },
+  "notification_http_500_observed": true,
+  "same_status_does_not_retry": true,
+  "recovery": {
+    "http_status": 200,
+    "response": {
+      "id": "1c2e0d0f-6354-43b6-ab09-57f18ae7bd57",
+      "user_id": "35cfb75f-52a0-4e1b-8594-fa05565d6638",
+      "title": "Эксперимент с отказом",
+      "description": "Проверка сохранения заявки",
+      "category": "LIGHTING",
+      "address": "Тестовая улица, 10",
+      "status": "IN_PROGRESS",
+      "created_at": "2026-10-26T18:05:37.727078Z",
+      "updated_at": "2026-10-26T18:05:37.756379Z"
+    },
+    "saved_issue_status": "IN_PROGRESS",
+    "notification_status": "SENT",
+    "sent_at": "2026-10-26 18:05:37.808555"
+  },
+  "previous_pending_preserved": true,
+  "passed": true
+}

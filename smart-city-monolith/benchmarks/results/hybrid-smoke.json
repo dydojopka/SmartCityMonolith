@@ -1,0 +1,24 @@
+{
+  "version": "hybrid",
+  "passed": true,
+  "login_roles": [
+    "USER",
+    "OPERATOR",
+    "ADMIN"
+  ],
+  "checks": [
+    "identity",
+    "vehicles",
+    "parking",
+    "sensors",
+    "invoices",
+    "issue-create-update",
+    "transport-notification-SENT",
+    "billing-demo-success-and-notification-SENT",
+    "frontend-vite-transformation",
+    "both-monolith-ports",
+    "CORS",
+    "notification-service-token"
+  ],
+  "containers": 6
+}
