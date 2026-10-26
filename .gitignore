@@ -1,6 +1,10 @@
 .local
 AGENTS.md
 
+# Personal presentation preparation
+/PRESENTATION_PLAN.md
+/PROJECT_EXPLAINED.md
+
 # Local configuration and Python environment
 .env
 .env.*
