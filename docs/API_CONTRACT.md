@@ -1,14 +1,15 @@
 # Контракт Utility и Notification
 
-Рабочая договорённость для параллельной реализации по [PLAN §2](PLAN.md#2-архитектурное-решение-для-реализации).
-Исходное поведение сверено с `dydojopka/SmartCity`, SHA `6983e58de588795731a548e31534794873835057`.
-Контракт реализован обоими модулями и проверен сквозными тестами. Итоги — в [отчёте](report/report.md).
+Монолит сохраняет маршруты Utility и Notification из
+[исходного SmartCity](SMARTCITY_ORIGIN.md). Клиенты обращаются к тому же
+REST API, а внутри приложения Utility вызывает публичный фасад Notification.
+Сценарий и стенды описаны в [техническом обзоре](PLAN.md).
 
 ## Общие импорты и подключение
 
 - `app.database`: `Base`, `engine`, `SessionLocal`, `get_db()`, `UTCDateTime`. SQLite через стандартный драйвер Python, один файл `monolith.db`; `check_same_thread=False`, timeout 30 секунд, `PRAGMA foreign_keys=ON`, как в исходнике. `UTCDateTime()` принимает только aware-даты, хранит naive UTC и возвращает aware UTC. WAL и отдельный сервер БД не добавляются.
 - `app.auth`: `CurrentUser(id: str, role: str)`, `get_current_user`, `require_roles(*roles)`. HS256, обязательные `sub` (UUID), `role`, `exp`; роли `USER/OPERATOR/ADMIN`.
-- `app.dependencies.get_notification_api()` создаёт `NotificationApi(SessionLocal, fail_sending=...)`. Флаг из `NOTIFICATION_FAIL_SEND`, по умолчанию `false` (`true`/`1` включают сбой). Функция возвращает настоящий фасад; успешной заглушки нет.
+- `app.dependencies.get_notification_api()` создаёт `NotificationApi(SessionLocal, fail_sending=...)`. `NOTIFICATION_FAIL_SEND` по умолчанию равен `false`. Значения `true` и `1` включают сбой.
 - Каждый модуль экспортирует `router: APIRouter` из `router.py`, регистрирует свои модели в `models.py`, предоставляет идемпотентный `seed_database(session: Session) -> None` в `seed.py`. Seed фиксирует только свои данные, без очистки БД и запуска при импорте.
 - `app.init_db` явно импортирует обе `models` до `Base.metadata.create_all`, затем вызывает seed каждого модуля с собственной сессией. Оба router подключаются в `app.main` без префикса.
 
@@ -81,4 +82,4 @@ api.send(
 - Общие fixtures: `db_engine`, `clean_database`, `session_factory`, `db_session`, `client`, `notification_api`, `token_for(role="USER", user_id=..., expires_in=3600)`, `user_headers`, `operator_headers`, `admin_headers`, `service_headers`.
 - `client` использует настоящий lifespan; `notification_api` — настоящий фасад, не mock. Для отказа создаётся `NotificationApi(session_factory, fail_sending=True)`; HTTP-зависимость можно переопределить через `app.dependency_overrides[get_notification_api]`.
 - Fixtures создают новый реальный SQLite-файл в `tmp_path` для каждого теста и перенастраивают общий engine/`SessionLocal`. Внешние `DATABASE_URL`/`TEST_DATABASE_URL` не выбирают тестовую БД; очистки произвольных файлов/таблиц нет. Для конкурентных запросов и отдельных сессий Notification используется тот же файл текущего теста, не разные in-memory БД. После теста engine освобождается, прежняя привязка `SessionLocal` восстанавливается. Команда проверки — обычный `python -m pytest -q`, без внешнего сервера и credentials.
-- Команды запуска и локального pytest: [PLAN — основа и проверка](PLAN.md#основа-и-проверка).
+- Команды для [запуска монолита и тестов](PLAN.md#запуск-монолита-и-тесты).
