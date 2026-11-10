@@ -8,6 +8,14 @@ REST API сохранены.
 
 ![SmartCity после объединения Utility и Notification](docs/report/diagrams/hybrid-city.png)
 
+## Команда
+
+| Участник | Вклад |
+|---|---|
+| [Ашроев Евгений](docs/tasks/zheNYA.md) | Общая инфраструктура, стенды Docker Compose и интеграция |
+| [Шилов Данил](docs/tasks/daNYA.md) | Модуль Utility, инструмент сравнения и замеры |
+| [Белоножко Иван](docs/tasks/vaNYA.md) | Модуль Notification, схемы и отчёт |
+
 ## Запуск
 
 Нужны Docker и Docker Compose. Выполните команду из корня репозитория.
@@ -58,11 +66,3 @@ docker compose -f smart-city/docker-compose.yml down
 - [Отчёт в PDF](docs/report/report.pdf) и [исходник отчёта](docs/report/report.md).
 - [Воспроизведение замеров](smart-city-monolith/benchmarks/ORIGIN.md)
   и [результаты](smart-city-monolith/benchmarks/results/summary.csv).
-
-## Команда
-
-| Участник | Вклад |
-|---|---|
-| [Ашроев Евгений](docs/tasks/zheNYA.md) | Общая инфраструктура, стенды Docker Compose и интеграция |
-| [Шилов Данил](docs/tasks/daNYA.md) | Модуль Utility, инструмент сравнения и замеры |
-| [Белоножко Иван](docs/tasks/vaNYA.md) | Модуль Notification, схемы и отчёт |
