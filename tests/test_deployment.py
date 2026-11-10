@@ -26,7 +26,7 @@ def compose_config(filename, **overrides):
         environment.pop(key, None)
     environment.update(overrides)
     result = subprocess.run(
-        ["docker", "compose", "--env-file", "/dev/null", "-f", filename,
+        ["docker", "compose", "--env-file", os.devnull, "-f", filename,
          "config", "--format", "json"],
         cwd=ROOT, env=environment, capture_output=True, text=True, timeout=30,
         check=True,
