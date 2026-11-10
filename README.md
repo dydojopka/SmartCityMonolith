@@ -1,43 +1,68 @@
-# Модульный монолит
+# SmartCity — модульный монолит
 
-Задание: [task.md](/task.md)
+В учебном проекте «Умный город» сервисы **Utility** и **Notification** объединены
+в одно приложение. При смене статуса заявки ЖКХ Utility сохраняет изменение
+и вызывает `NotificationApi.send` внутри процесса. Identity, Transport,
+Environment и Billing работают отдельными сервисами. Сайт на React и внешнее
+REST API сохранены.
 
-## Команда
-| Участники | Задания | Вклад |
-|-----------|---------|-------|
-| Ашроев Евгений | [zheNYA](docs/tasks/zheNYA.md) | |
-| Шилов Данил | [daNYA](docs/tasks/daNYA.md) | |
-| Белоножко Иван | [vaNYA](docs/tasks/vaNYA.md) | |
-
-## Что прочитать перед началом работы
-
-Каждому участнику необходимо прочитать:
-
-1. [Условие задания](task.md) - требования к реализации, измерениям и отчёту.
-2. [Общий план](docs/PLAN.md) - архитектура, границы модулей, распределение работы, порядок PR и методика проверок.
-3. [API-контракт](docs/API_CONTRACT.md) - внешнее API и правила взаимодействия модулей.
-4. Свой чек-лист из таблицы ниже - конкретные задачи, критерии готовности и инструкции по работе в ветке и созданию PR.
-
-Персональный чек-лист не заменяет общий план и API-контракт.
+![SmartCity после объединения Utility и Notification](docs/report/diagrams/hybrid-city.png)
 
 ## Запуск
 
-Нужны Docker и Docker Compose. Из корня репозитория:
+Нужны Docker и Docker Compose. Выполните команду из корня репозитория.
 
 ```bash
-cd smart-city-monolith
-docker compose up --build app
+docker compose up -d --build --wait
 ```
 
-- Документация: http://localhost:8003/docs
-- Проверка запуска: http://localhost:8003/health
-- То же приложение доступно на порту `8006`. SQLite хранится в Docker volume.
+Откройте <http://localhost:5173>. Для проверки сценария войдите под ролью USER
+и создайте заявку ЖКХ. Затем войдите под ролью OPERATOR и измените её статус.
+Обе роли доступны в [демонстрационных аккаунтах](smart-city/README.md#демонстрационные-аккаунты).
 
-Сейчас доступны только `/health` и `/docs`; бизнес-модули ещё не подключены.
-Если порты заняты исходным SmartCity, настрой `UTILITY_PORT` и `NOTIFICATION_PORT` в `.env` по [.env.example](smart-city-monolith/.env.example).
+| Компонент | Порт по умолчанию |
+|---|---:|
+| Identity | 8001 |
+| Transport | 8002 |
+| Монолит (Utility и Notification) | 8003 и 8006 |
+| Environment | 8004 |
+| Billing | 8005 |
+| Сайт | 5173 |
 
-Остановка из каталога `smart-city-monolith/`, без удаления данных:
+Swagger доступен по `http://localhost:<порт>/docs`, состояние API — по
+`/health`. Порты и локальные настройки можно задать по [.env.example](.env.example).
+Команда `docker compose down` останавливает город с сохранением SQLite в
+томах Docker.
+
+Исходный город с шестью микросервисами запускается из того же репозитория.
+При стандартных портах сначала остановите целевой стенд.
 
 ```bash
-docker compose down
+docker compose -f smart-city/docker-compose.yml up -d --build --wait
+docker compose -f smart-city/docker-compose.yml down
 ```
+
+## Результаты сравнения
+
+В изолированном тесте Utility и Notification монолит потреблял в среднем
+**62,77 МБ** против **182,53 МБ** у двух микросервисов. Среднее время ответа
+при смене статуса заявки составило **533,84 мс** против **411,29 мс**.
+При сбое отправки в обеих версиях клиент получал `200` с сохранённым
+статусом заявки, а уведомление оставалось `PENDING`.
+
+## Материалы
+
+- [Условие лабораторной работы](task.md).
+- [Устройство проекта, запуск и проверки](docs/PLAN.md).
+- [Контракт Utility и Notification](docs/API_CONTRACT.md).
+- [Отчёт в PDF](docs/report/report.pdf) и [исходник отчёта](docs/report/report.md).
+- [Воспроизведение замеров](smart-city-monolith/benchmarks/ORIGIN.md)
+  и [результаты](smart-city-monolith/benchmarks/results/summary.csv).
+
+## Команда
+
+| Участник | Вклад |
+|---|---|
+| [Ашроев Евгений](docs/tasks/zheNYA.md) | Общая инфраструктура, стенды Docker Compose и интеграция |
+| [Шилов Данил](docs/tasks/daNYA.md) | Модуль Utility, инструмент сравнения и замеры |
+| [Белоножко Иван](docs/tasks/vaNYA.md) | Модуль Notification, схемы и отчёт |
